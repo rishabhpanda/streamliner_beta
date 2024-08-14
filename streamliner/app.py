@@ -6,18 +6,6 @@ import json
 import os
 import base64
 
-# Read the OpenAI API key from a file
-def read_api_key(file_path):
-    with open(file_path, 'r') as file:
-        return file.read().strip()
-
-# Set your OpenAI API key
-api_key_path = 'OpenAI_API_Key.txt'
-if os.path.exists(api_key_path):
-    openai.api_key = read_api_key(api_key_path)
-else:
-    raise ValueError(f"API key file not found: {api_key_path}")
-
 # File to store user data
 USER_DATA_FILE = 'users.json'
 
@@ -124,6 +112,7 @@ if menu == "Login":
     # Login form
     username = st.text_input("**Username**")
     password = st.text_input("**Password**", type="password")
+    openai_api_key = st.text_input("**OpenAI API Key**", type="password")
     
     # Button logic with input validation
     if st.button("Login"):
@@ -131,6 +120,7 @@ if menu == "Login":
             st.session_state.authentication_status = True
             st.session_state.current_user = username
             st.session_state.authenticated = True
+            st.session_state.openai_api_key = openai_api_key  # Store the API key in session state
             st.success("Login successful.")
         else:
             st.session_state.authentication_status = False
@@ -148,6 +138,9 @@ if menu == "Register":
 
 # Main application
 if st.session_state.authenticated:
+    # Set the OpenAI API key
+    openai.api_key = st.session_state.openai_api_key
+    
     # Data upload
     uploaded_file = st.file_uploader("Upload your dataset (CSV file)", type=["csv"])
     
