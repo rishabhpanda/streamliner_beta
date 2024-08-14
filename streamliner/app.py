@@ -53,6 +53,13 @@ def register_user(username, password):
         return True
     return False
 
+# Function to load and apply CSS from a file
+def load_css(background_css_file_path, image_base64):
+    with open(background_css_file_path, "r") as css_file:
+        css_content = css_file.read()
+    css_content = css_content.replace("{background_image_placeholder}", image_base64)
+    return f"<style>{css_content}</style>"
+
 # Initialize authentication state
 if 'authentication_status' not in st.session_state:
     st.session_state.authentication_status = None
@@ -60,35 +67,51 @@ if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
 
 # Streamlit app
-st.title("Streamliner AI")
-st.subheader("Solution for big data challenges in your fingertips", divider="blue")
+# Load the CSS file
+with open("styles/header_texts.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# Use the classes defined in CSS
+st.markdown(
+    """
+    <h1 class="gradient-text">
+    Streamliner AI (beta)
+    </h1>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """
+    <h3 class="custom-subtitle">
+        How can I assist you with your big data challenges?
+    </h3>
+    <hr class="custom-hr">
+    """,
+    unsafe_allow_html=True
+)
 
 # Function to encode an image to base64
 def get_base64_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode()
 
-# Path to the local image
+# Path to the local background image
 image_path = "dependencies/images/background.jpg"
 base64_image = get_base64_image(image_path)
 
-# CSS to set the background image and add black boundary to text boxes
-background_css = f"""
-    <style>
-    .stApp {{
-        background-image: url("data:image/jpg;base64,{base64_image}");
-        background-size: cover;
-        color: black;
-    }}
+# Path to the background CSS file
+background_css_file_path = "styles/background.css"
 
-    </style>
-"""
-
-# Apply the CSS
-st.markdown(background_css, unsafe_allow_html=True)
+# Load and apply the background CSS
+if os.path.exists(background_css_file_path):
+    background_css = load_css(background_css_file_path, base64_image)
+    st.markdown(background_css, unsafe_allow_html=True)
+else:
+    st.error(f"CSS file not found: {background_css_file_path}")
 
 # Navigation menu
-menu = st.sidebar.selectbox("Menu", ["Login", "Register"])
+menu = st.sidebar.selectbox("**Login or Sign Up**", ["Login", "Register"])
 
 if menu == "Login":
     # Login form

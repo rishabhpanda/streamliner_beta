@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\risha\streamliner_beta\streamliner\appenv"
+VIRTUAL_ENV="C:\Users\66023\OneDrive - Bain\Desktop\rishabh-panda\streamliner_beta\streamliner\appenv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
