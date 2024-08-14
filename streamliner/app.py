@@ -71,7 +71,7 @@ if 'authenticated' not in st.session_state:
 with open("styles/header_texts.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Use the classes defined in CSS
+# Use the header text classes defined in CSS
 st.markdown(
     """
     <h1 class="gradient-text">
@@ -130,8 +130,8 @@ if menu == "Login":
 
 if menu == "Register":
     # Registration form
-    new_username = st.text_input("New Username")
-    new_password = st.text_input("New Password", type="password")
+    new_username = st.text_input("**New Username**")
+    new_password = st.text_input("**New Password**", type="password")
     if st.button("Register"):
         if register_user(new_username, new_password):
             st.success("Registration successful! You can now log in.")
