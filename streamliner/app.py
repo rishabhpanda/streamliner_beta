@@ -108,6 +108,9 @@ st.sidebar.image("dependencies/images/bain_logo.png", use_column_width=True)
 # Navigation menu
 menu = st.sidebar.selectbox("**Login or Sign Up**", ["Login", "Register"])
 
+# Display the OpenAI logo below the dropdown
+st.sidebar.image("dependencies/images/openai-logomark.png", use_column_width=True)
+
 if menu == "Login":
     # Login form
     username = st.text_input("**Username**")
@@ -160,7 +163,7 @@ if st.session_state.authenticated:
             response = client.chat.completions.create(
                 model="gpt-4",
                 messages=[
-                    {"role": "system", "content": "Act as a data expert."},
+                    {"role": "system", "content": "Act as a data expert in terms of analyzing .CSV and .XLSX files."},
                     {"role": "user", "content": f"Here is the dataset:\n{csv_string}\n\n{prompt}"}
                 ]
             )
