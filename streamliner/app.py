@@ -53,13 +53,6 @@ def register_user(username, password):
         return True
     return False
 
-# Function to load and apply CSS from a file
-def load_css(background_css_file_path, image_base64):
-    with open(background_css_file_path, "r") as css_file:
-        css_content = css_file.read()
-    css_content = css_content.replace("{background_image_placeholder}", image_base64)
-    return f"<style>{css_content}</style>"
-
 # Initialize authentication state
 if 'authentication_status' not in st.session_state:
     st.session_state.authentication_status = None
@@ -67,8 +60,19 @@ if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
 
 # Streamlit app
-# Load the CSS file
+# Function to load and apply CSS to background image
+def load_css(background_css_file_path, image_base64):
+    with open(background_css_file_path, "r") as css_file:
+        css_content = css_file.read()
+    css_content = css_content.replace("{background_image_placeholder}", image_base64)
+    return f"<style>{css_content}</style>"
+
+# Load the header text styles
 with open("styles/header_texts.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# Load the button styles
+with open("styles/buttons.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Use the header text classes defined in CSS
@@ -110,6 +114,9 @@ if os.path.exists(background_css_file_path):
 else:
     st.error(f"CSS file not found: {background_css_file_path}")
 
+# Display the logo at the top of the sidebar
+st.sidebar.image("dependencies/images/bain_logo.png", use_column_width=True)
+
 # Navigation menu
 menu = st.sidebar.selectbox("**Login or Sign Up**", ["Login", "Register"])
 
@@ -118,6 +125,7 @@ if menu == "Login":
     username = st.text_input("**Username**")
     password = st.text_input("**Password**", type="password")
     
+    # Button logic with input validation
     if st.button("Login"):
         if authenticate_user(username, password):
             st.session_state.authentication_status = True
@@ -134,14 +142,12 @@ if menu == "Register":
     new_password = st.text_input("**New Password**", type="password")
     if st.button("Register"):
         if register_user(new_username, new_password):
-            st.success("Registration successful! You can now log in.")
+            st.success("Registration successful! You can now log in")
         else:
-            st.error("Username already exists. Please choose a different username.")
+            st.error("Username already exists. Please choose a different username")
 
 # Main application
 if st.session_state.authenticated:
-    st.write(f"Welcome, {st.session_state.current_user}!")
-    
     # Data upload
     uploaded_file = st.file_uploader("Upload your dataset (CSV file)", type=["csv"])
     
@@ -161,7 +167,7 @@ if st.session_state.authenticated:
             response = client.chat.completions.create(
                 model="gpt-4",
                 messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "system", "content": "Act as a data expert."},
                     {"role": "user", "content": f"Here is the dataset:\n{csv_string}\n\n{prompt}"}
                 ]
             )
