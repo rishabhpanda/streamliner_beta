@@ -111,7 +111,13 @@ if st.session_state.authenticated:
 
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
-        st.write("Dataset preview:", df.head())
+        st.write("Dataset preview:")
+        
+        # Applying alternating row colors
+        styled_df = df.style.apply(
+            lambda x: ['background-color: #e2e2e2' if i % 2 == 0 else 'background-color: #ffffff' for i in range(len(x))], axis=0
+        )
+        st.dataframe(styled_df)
 
         csv_string = df.to_csv(index=False)
 
