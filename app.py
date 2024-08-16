@@ -1,45 +1,18 @@
 import streamlit as st
 import pandas as pd
 import openai
-import hashlib
-import json
 import os
-import base64
+from utils.helper_functions import *
+    
+# Path to the local background image
+image_path = "dependencies/images/background.jpg"
+base64_image_background = get_base64_image(image_path)
 
-# File to store user data
-USER_DATA_FILE = 'users.json'
+# Get the base64 string of the OpenAI logo
+base64_image_openai = get_base64_image("dependencies/images/openai-lockup.png")
 
-# Helper functions
-def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
-
-def load_users():
-    if os.path.exists(USER_DATA_FILE):
-        with open(USER_DATA_FILE, 'r') as f:
-            return json.load(f)
-    return {}
-
-def save_users(users):
-    with open(USER_DATA_FILE, 'w') as f:
-        json.dump(users, f)
-
-def authenticate_user(username, password):
-    users = load_users()
-    if username in users:
-        hashed_password = hash_password(password)
-        if users[username]['password'] == hashed_password:
-            return True
-    return False
-
-def register_user(username, password):
-    users = load_users()
-    if username not in users:
-        users[username] = {
-            "password": hash_password(password)
-        }
-        save_users(users)
-        return True
-    return False
+# Path to the background CSS file
+background_css_file_path = "styles/background.css"
 
 # Initialize authentication state
 if 'authentication_status' not in st.session_state:
@@ -48,13 +21,6 @@ if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
 
 # Streamlit app
-# Function to load and apply CSS to background image
-def load_css(background_css_file_path, image_base64):
-    with open(background_css_file_path, "r") as css_file:
-        css_content = css_file.read()
-    css_content = css_content.replace("{background_image_placeholder}", image_base64)
-    return f"<style>{css_content}</style>"
-
 # Load the header text styles
 with open("styles/header_texts.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -83,21 +49,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Function to encode an image to base64
-def get_base64_image(image_path):
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode()
-
-# Path to the local background image
-image_path = "dependencies/images/background.jpg"
-base64_image = get_base64_image(image_path)
-
-# Path to the background CSS file
-background_css_file_path = "styles/background.css"
-
 # Load and apply the background CSS
 if os.path.exists(background_css_file_path):
-    background_css = load_css(background_css_file_path, base64_image)
+    background_css = load_css(background_css_file_path, base64_image_background)
     st.markdown(background_css, unsafe_allow_html=True)
 else:
     st.error(f"CSS file not found: {background_css_file_path}")
@@ -109,7 +63,26 @@ st.sidebar.image("dependencies/images/bain_logo.png", use_column_width=True)
 menu = st.sidebar.selectbox("**Login or Sign Up**", ["Login", "Register"])
 
 # Display the OpenAI logo below the dropdown
-st.sidebar.image("dependencies/images/openai-logomark.png", use_column_width=True)
+# Add some space before the image
+st.sidebar.markdown("<br>", unsafe_allow_html=True)
+
+# Display the image with a rectangular border and within the box
+st.sidebar.markdown(
+    f"""
+    <div style="border: 3px solid rgb(255,255,255); 
+    padding: 10px; 
+    width: 100%; 
+    margin: auto; 
+    text-align: center;
+    background-color: white;
+    border-radius: 10px;">
+        <a href="https://platform.openai.com/api-keys" target="_blank">
+            <img src="data:image/png;base64,{base64_image_openai}" width="150">
+        </a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 if menu == "Login":
     # Login form
