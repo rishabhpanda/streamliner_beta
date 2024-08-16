@@ -1,0 +1,10 @@
+﻿Transaction_ID,Customer_ID,Total_Purchases,Amount,Total_Amount,Product_Category,Product_Type,Products,Feedback,Ratings
+4340470,10000,5,299.74,1498.69,Clothing,Shorts,Khaki shorts,Good,3
+8180050,10000,7,61.42,429.92,Grocery,Water,Sparkling water,Excellent,5
+4759669,10000,6,447.18,2683.06,Electronics,Tablet,Amazon Fire Tablet,Average,2
+8901617,10000,3,131.97,395.9,Home Decor,Bedding,Quilt,Good,4
+6592641,10001,3,122.49,367.46,Grocery,Soft Drink,Grape soda,Bad,1
+3875669,10001,3,323.11,969.33,Books,Fiction,Adventure,Excellent,5
+5025854,10001,8,484.94,3879.54,Clothing,Shirt,Tank top,Excellent,5
+4824050,10001,4,302.08,1208.33,Electronics,Tablet,iPad,Good,3
+2202795,10001,6,285.3,1711.8,Grocery,Juice,Pomegranate juice,Excellent,4

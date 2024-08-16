@@ -1,0 +1,45 @@
+/* styles/buttons.css */
+.stButton button {
+    background-color: rgb(204, 0, 0);
+    color: white !important; /* Force text color to be white */
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition for background change */
+}
+
+.stButton button:hover {
+    background-color: rgb(185, 0, 0); /* Darken on hover */
+    color: white !important; /* Ensure text color remains white on hover */
+}
+
+.stButton button:focus {
+    outline: none; /* Remove outline on focus */
+    box-shadow: none; /* Remove any shadow that might be added on focus */
+}
+
+.stButton button:active {
+    background-color: rgb(165, 0, 0); /* Further darken on click */
+    color: white !important; /* Ensure text color remains white on click */
+    outline: none; /* Remove outline on click */
+    box-shadow: none; /* Remove any shadow that might be added on click */
+}
+
+/* Reset the button to its original state after click */
+.stButton button:active:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    animation: resetButtonState 0.1s;
+}
+
+@keyframes resetButtonState {
+    from { opacity: 1; }
+    to { opacity: 1; }
+}
