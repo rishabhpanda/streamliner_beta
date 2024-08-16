@@ -1,0 +1,16 @@
+/* styles/sidebar_sections.css */
+.sidebar-section-container {
+    border: 3px solid rgb(255,255,255);
+    padding: 10px;
+    width: 100%;
+    margin: auto;
+    text-align: center;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-section-container h3 {
+    color: gray;
+    font-size: 1.3em; /* Increase the font size here */
+}

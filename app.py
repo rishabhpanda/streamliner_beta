@@ -18,7 +18,7 @@ st.session_state.setdefault('authentication_status', None)
 st.session_state.setdefault('authenticated', False)
 
 # Load CSS files
-css_files = ["styles/header_texts.css", "styles/buttons.css", "styles/openai_logo.css"]
+css_files = ["styles/header_texts.css", "styles/buttons.css", "styles/openai_logo.css", "styles/sidebar_sections.css"]
 for css_file in css_files:
     with open(css_file) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -42,27 +42,41 @@ else:
 
 # Sidebar elements
 st.sidebar.image("utils/images/bain_logo.png", use_column_width=True)
+
+# Navigation menu
+menu = st.sidebar.selectbox("**Login or Sign Up**", ["Login", "Register"])
+
+st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
+
+# Sidebar content
 st.sidebar.markdown(
     f"""
-    <div class="logo-container">
-        <a href="https://platform.openai.com/api-keys" target="_blank">
+    <a href="https://platform.openai.com/api-keys" target="_blank" style="text-decoration: none;">
+        <div class="logo-container">
             <img src="data:image/png;base64,{base64_image_openai}">
-        </a>
+        </div>
+    </a>
+    """,
+    unsafe_allow_html=True
+)
+
+st.sidebar.markdown("<br>", unsafe_allow_html=True)
+
+st.sidebar.markdown(
+    """
+    <div class="sidebar-section-container">
+        <h3>Documentation & User Guide</h3>
     </div>
     """,
     unsafe_allow_html=True
 )
-st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
-
-# Navigation menu
-menu = st.sidebar.selectbox("**Login or Sign Up**", ["Login", "Register"])
 
 # Login and registration forms
 if menu == "Login":
     username = st.text_input("**Username**")
     password = st.text_input("**Password**", type="password")
     openai_api_key = st.text_input(
-        "**OpenAI API Key**\n\n*(If you do not have an API key, please click the OpenAI logo in the sidebar to generate one.)*",
+        "**OpenAI API Key**\n\n*If you do not have an API key, please click the OpenAI logo in the sidebar to generate one.*",
         type="password"
     )
 
