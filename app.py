@@ -5,11 +5,11 @@ import os
 from utils.helper_functions import *
     
 # Path to the local background image
-image_path = "dependencies/images/background.jpg"
+image_path = "utils/images/background.jpg"
 base64_image_background = get_base64_image(image_path)
 
 # Get the base64 string of the OpenAI logo
-base64_image_openai = get_base64_image("dependencies/images/openai-lockup.png")
+base64_image_openai = get_base64_image("utils/images/openai-lockup.png")
 
 # Path to the background CSS file
 background_css_file_path = "styles/background.css"
@@ -57,7 +57,7 @@ else:
     st.error(f"CSS file not found: {background_css_file_path}")
 
 # Display the logo at the top of the sidebar
-st.sidebar.image("dependencies/images/bain_logo.png", use_column_width=True)
+st.sidebar.image("utils/images/bain_logo.png", use_column_width=True)
 
 # Navigation menu
 menu = st.sidebar.selectbox("**Login or Sign Up**", ["Login", "Register"])
