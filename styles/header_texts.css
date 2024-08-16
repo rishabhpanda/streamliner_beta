@@ -8,7 +8,7 @@ h1.gradient-text {
     -ms-background-clip: text;     /* For Internet Explorer and Edge */
     -o-background-clip: text;      /* For Opera */
     background-clip: text;
-    font-size: 65px;
+    font-size: 60px;
     color: transparent;
 }
 
