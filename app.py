@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import openai
 import os
-from utils.helper_functions import get_base64_image, load_css, authenticate_user, register_user
+from utils.helper_functions import *
 
 # Define paths
 BACKGROUND_CSS_FILE_PATH = os.path.join("styles", "background.css")
