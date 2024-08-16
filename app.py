@@ -3,16 +3,15 @@ import pandas as pd
 import openai
 import os
 from utils.helper_functions import *
-    
-# Path to the local background image
-image_path = "utils/images/background.jpg"
-base64_image_background = get_base64_image(image_path)
 
-# Get the base64 string of the OpenAI logo
-base64_image_openai = get_base64_image("utils/images/openai-lockup.png")
+# Define paths relative to the project directory
+BACKGROUND_CSS_FILE_PATH = os.path.join("styles", "background.css")
+BACKGROUND_IMAGE_PATH = os.path.join("utils", "images", "background.jpg")
+OPENAI_LOGO_PATH = os.path.join("utils", "images", "openai-lockup.png")
 
-# Path to the background CSS file
-background_css_file_path = "styles/background.css"
+# Convert the images to base64 format
+base64_image_background = get_base64_image(BACKGROUND_IMAGE_PATH)
+base64_image_openai = get_base64_image(OPENAI_LOGO_PATH)
 
 # Initialize authentication state
 if 'authentication_status' not in st.session_state:
@@ -27,6 +26,10 @@ with open("styles/header_texts.css") as f:
 
 # Load the button styles
 with open("styles/buttons.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# Load the OpenAI Logo CSS file
+with open("styles/openai_logo.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Use the header text classes defined in CSS
@@ -50,45 +53,41 @@ st.markdown(
 )
 
 # Load and apply the background CSS
-if os.path.exists(background_css_file_path):
-    background_css = load_css(background_css_file_path, base64_image_background)
+if os.path.exists(BACKGROUND_CSS_FILE_PATH):
+    background_css = load_css(BACKGROUND_CSS_FILE_PATH, base64_image_background)
     st.markdown(background_css, unsafe_allow_html=True)
 else:
-    st.error(f"CSS file not found: {background_css_file_path}")
+    st.error(f"CSS file not found: {BACKGROUND_CSS_FILE_PATH}")
 
 # Display the logo at the top of the sidebar
 st.sidebar.image("utils/images/bain_logo.png", use_column_width=True)
 
-# Navigation menu
-menu = st.sidebar.selectbox("**Login or Sign Up**", ["Login", "Register"])
-
-# Display the OpenAI logo below the dropdown
-# Add some space before the image
-st.sidebar.markdown("<br>", unsafe_allow_html=True)
-
-# Display the image with a rectangular border and within the box
+# Display the OpenAI logo
 st.sidebar.markdown(
     f"""
-    <div style="border: 3px solid rgb(255,255,255); 
-    padding: 10px; 
-    width: 100%; 
-    margin: auto; 
-    text-align: center;
-    background-color: white;
-    border-radius: 10px;">
+    <div class="logo-container">
         <a href="https://platform.openai.com/api-keys" target="_blank">
-            <img src="data:image/png;base64,{base64_image_openai}" width="150">
+            <img src="data:image/png;base64,{base64_image_openai}">
         </a>
     </div>
     """,
     unsafe_allow_html=True
 )
 
+# Add some space
+st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
+
+# Navigation menu
+menu = st.sidebar.selectbox("**Login or Sign Up**", ["Login", "Register"])
+
 if menu == "Login":
     # Login form
     username = st.text_input("**Username**")
     password = st.text_input("**Password**", type="password")
-    openai_api_key = st.text_input("**OpenAI API Key**", type="password")
+    openai_api_key = st.text_input(
+        "**OpenAI API Key**\n\n*(If you do not have an API key, please click the OpenAI logo in the sidebar to generate one.)*",
+        type="password"
+    )
     
     # Button logic with input validation
     if st.button("Login"):
