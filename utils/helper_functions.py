@@ -1,6 +1,7 @@
 import hashlib
 import json
 import base64
+import os
 
 # File to store user data
 USER_DATA_FILE = 'users.json'
