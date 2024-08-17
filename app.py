@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import openai
 import os
+import io
 from utils.helper_functions import *
 
 # Define paths
@@ -112,10 +113,10 @@ if st.session_state.authenticated:
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
         st.write("Dataset preview:")
-        
+
         # Applying alternating row colors
         styled_df = df.style.apply(
-            lambda x: ['background-color: #e2e2e2' if i % 2 == 0 else 'background-color: #ffffff' for i in range(len(x))], axis=0
+            lambda x: ['background-color: #efefef' if i % 2 == 0 else 'background-color: #ffffff' for i in range(len(x))], axis=0
         )
         st.dataframe(styled_df)
 
@@ -125,11 +126,20 @@ if st.session_state.authenticated:
 
         if st.button("Submit Prompt"):
             client = openai.OpenAI(api_key=openai.api_key)
-            response = client.chat_completions.create(
+            response = client.chat.completions.create(
                 model="gpt-4",
                 messages=[
-                    {"role": "system", "content": "Act as a data expert in analyzing .CSV and .XLSX files."},
+                    {"role": "system", "content": "You are an expert data analyst specialized in cleaning, transforming, and preparing datasets for analysis. Your task is to understand user prompts and directly apply the necessary operations to clean and format datasets, ensuring data quality, consistency, and readiness for further analysis. You should return the cleaned or processed data as the final output, not the steps or code to achieve it."},
                     {"role": "user", "content": f"Here is the dataset:\n{csv_string}\n\n{prompt}"}
                 ]
             )
-            st.write("Response:", response.choices[0].message.content.strip())
+
+             # Assuming the API now returns the processed dataset as a CSV string
+            processed_csv_string = response.choices[0].message.content.strip()
+
+            # Convert the processed CSV string back to a DataFrame using io.StringIO
+            processed_df = pd.read_csv(io.StringIO(processed_csv_string))
+
+            st.write("Processed Dataset:")
+            
+            st.dataframe(processed_df)
