@@ -66,7 +66,7 @@ st.sidebar.markdown("<br>", unsafe_allow_html=True)
 st.sidebar.markdown(
     """
     <div class="sidebar-section-container">
-        <h3>Documentation & User Guide</h3>
+        <h3>Product Documentation</h3>
     </div>
     """,
     unsafe_allow_html=True
