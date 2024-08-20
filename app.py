@@ -4,6 +4,7 @@ import openai
 import os
 import io
 from utils.helper_functions import *
+from utils.metadata import *
 
 # Define paths
 BACKGROUND_CSS_FILE_PATH = os.path.join("styles", "background.css")
@@ -111,6 +112,14 @@ if st.session_state.authenticated:
     uploaded_file = st.file_uploader("Upload your dataset (CSV file)", type=["csv"])
 
     if uploaded_file:
+        # Generate and display metadata
+        metadata = generate_metadata(uploaded_file)
+        display_metadata(metadata)
+
+        # Reset the file pointer to the beginning
+        uploaded_file.seek(0)
+
+        # Now read the file again
         df = pd.read_csv(uploaded_file)
         st.write("Dataset preview:")
 
@@ -134,12 +143,12 @@ if st.session_state.authenticated:
                 ]
             )
 
-             # Assuming the API now returns the processed dataset as a CSV string
+            # Assuming the API now returns the processed dataset as a CSV string
             processed_csv_string = response.choices[0].message.content.strip()
 
             # Convert the processed CSV string back to a DataFrame using io.StringIO
             processed_df = pd.read_csv(io.StringIO(processed_csv_string))
 
             st.write("Processed Dataset:")
-            
             st.dataframe(processed_df)
+

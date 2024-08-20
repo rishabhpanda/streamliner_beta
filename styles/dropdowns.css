@@ -1,0 +1,5 @@
+/* styles/dropdowns.css */
+.stSelectbox {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+    border-radius: 5px; /* Optional: Rounded corners for better UI */
+}
