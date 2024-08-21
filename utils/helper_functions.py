@@ -1,5 +1,7 @@
+import pandas as pd
 import hashlib
 import json
+import pyodbc
 import base64
 import os
 
@@ -48,3 +50,18 @@ def load_css(background_css_file_path, image_base64):
 def get_base64_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode()
+
+def fetch_data_from_sql(query):
+    conn_str = (
+        "DRIVER={ODBC Driver 17 for SQL Server};"
+        "SERVER=aag-a7rw-sql-server.database.windows.net;"
+        "DATABASE=product_testing;"
+        "Authentication=ActiveDirectoryPassword;"
+        "UID=;"
+        "PWD=;"
+    )
+    
+    with pyodbc.connect(conn_str) as conn:
+        df = pd.read_sql(query, conn)
+    
+    return df

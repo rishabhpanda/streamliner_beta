@@ -114,28 +114,46 @@ elif menu == "Register":
 if st.session_state.authenticated:
     openai.api_key = st.session_state.openai_api_key
 
-    uploaded_file = st.file_uploader("Upload your dataset (CSV file)", type=["csv"])
+    data_source = st.radio("Select data source", ["Upload CSV", "Fetch from SQL Server"])
 
-    if uploaded_file:
-        # Generate and display metadata
-        metadata = generate_metadata(uploaded_file)
-        display_metadata(metadata)
+    if data_source == "Upload CSV":
+        uploaded_file = st.file_uploader("Upload your dataset (CSV file)", type=["csv"])
 
-        # Reset the file pointer to the beginning
-        uploaded_file.seek(0)
+        if uploaded_file:
+            # Existing code for handling uploaded file
+            metadata = generate_metadata(uploaded_file)
+            display_metadata(metadata)
+            uploaded_file.seek(0)
+            df = pd.read_csv(uploaded_file)
 
-        # Now read the file again
-        df = pd.read_csv(uploaded_file)
+    elif data_source == "Fetch from SQL Server":
+        query = st.text_area("Enter SQL query to fetch data")
+
+        if st.button("Fetch Data"):
+            try:
+                df = fetch_data_from_sql(query)
+                st.success("Data fetched successfully.")
+
+                # Convert the DataFrame to a CSV file-like object
+                csv_buffer = io.StringIO()
+                df.to_csv(csv_buffer, index=False)
+                csv_buffer.seek(0)  # Rewind the buffer
+
+                # Generate metadata for the fetched data
+                metadata = generate_metadata(csv_buffer)
+                display_metadata(metadata)
+
+            except Exception as e:
+                st.error(f"Error fetching data: {e}")
+            
+    if 'df' in locals():
         st.write("Dataset preview:")
-
-        # Applying alternating row colors
         styled_df = df.style.apply(
             lambda x: ['background-color: #efefef' if i % 2 == 0 else 'background-color: #ffffff' for i in range(len(x))], axis=0
         )
         st.dataframe(styled_df)
-
+        
         csv_string = df.to_csv(index=False)
-
         prompt = st.text_area("Enter your data cleaning prompt")
 
         if st.button("Submit Prompt"):

@@ -1,7 +1,4 @@
 streamlit
-pandas
+pandas==1.4.0
 openai
-hashlib
-json
-os
-base64
+pyodbc
