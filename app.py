@@ -116,44 +116,52 @@ if st.session_state.authenticated:
 
     data_source = st.radio("Select data source", ["Upload CSV", "Fetch from SQL Server"])
 
+    if 'df' not in st.session_state:
+        st.session_state.df = None  # Initialize df in session state if it doesn't exist
+
     if data_source == "Upload CSV":
         uploaded_file = st.file_uploader("Upload your dataset (CSV file)", type=["csv"])
 
         if uploaded_file:
-            # Existing code for handling uploaded file
+            # Generate and display metadata for the uploaded file
             metadata = generate_metadata(uploaded_file)
             display_metadata(metadata)
-            uploaded_file.seek(0)
-            df = pd.read_csv(uploaded_file)
+            uploaded_file.seek(0)  # Rewind the file pointer to the beginning
+            st.session_state.df = pd.read_csv(uploaded_file)  # Store the DataFrame in session state
 
     elif data_source == "Fetch from SQL Server":
         query = st.text_area("Enter SQL query to fetch data")
 
         if st.button("Fetch Data"):
             try:
-                df = fetch_data_from_sql(query)
+                df = fetch_data_from_sql(query)  # Fetch data from SQL Server
                 st.success("Data fetched successfully.")
 
-                # Convert the DataFrame to a CSV file-like object
-                csv_buffer = io.StringIO()
-                df.to_csv(csv_buffer, index=False)
+                # Convert the DataFrame to a CSV string for further processing
+                csv_string = df.to_csv(index=False)
+
+                # Since this is SQL data, we create an in-memory buffer
+                csv_buffer = io.StringIO(csv_string)
                 csv_buffer.seek(0)  # Rewind the buffer
 
-                # Generate metadata for the fetched data
+                # Generate and display metadata for the fetched data
                 metadata = generate_metadata(csv_buffer)
                 display_metadata(metadata)
 
+                st.session_state.df = df  # Store the DataFrame in session state
+
             except Exception as e:
                 st.error(f"Error fetching data: {e}")
-            
-    if 'df' in locals():
+
+    # If df is not None (i.e., data has been loaded either via upload or SQL fetch)
+    if st.session_state.df is not None:
         st.write("Dataset preview:")
-        styled_df = df.style.apply(
+        styled_df = st.session_state.df.style.apply(
             lambda x: ['background-color: #efefef' if i % 2 == 0 else 'background-color: #ffffff' for i in range(len(x))], axis=0
         )
         st.dataframe(styled_df)
-        
-        csv_string = df.to_csv(index=False)
+
+        csv_string = st.session_state.df.to_csv(index=False)
         prompt = st.text_area("Enter your data cleaning prompt")
 
         if st.button("Submit Prompt"):
