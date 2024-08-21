@@ -57,8 +57,8 @@ def fetch_data_from_sql(query):
         "SERVER=aag-a7rw-sql-server.database.windows.net;"
         "DATABASE=product_testing;"
         "Authentication=ActiveDirectoryPassword;"
-        "UID=;"
-        "PWD=;"
+        "UID=rishabh.panda@bain.com;"
+        "PWD=Welcome2bain@123;"
     )
     
     with pyodbc.connect(conn_str) as conn:
