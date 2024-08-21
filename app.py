@@ -48,7 +48,7 @@ st.sidebar.image("utils/images/bain_logo.png", use_column_width=True)
 # Navigation menu
 menu = st.sidebar.selectbox("**Login or Sign Up**", ["Login", "Register"])
 
-st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
+st.sidebar.markdown("<br><br><br><br>", unsafe_allow_html=True)
 
 # Sidebar content
 st.sidebar.markdown(
@@ -67,7 +67,7 @@ st.sidebar.markdown("<br>", unsafe_allow_html=True)
 st.sidebar.markdown(
     """
     <div class="sidebar-section-container">
-        <h3>Product Documentation</h3>
+        <h3>Tool Documentation</h3>
     </div>
     """,
     unsafe_allow_html=True
@@ -151,4 +151,3 @@ if st.session_state.authenticated:
 
             st.write("Processed Dataset:")
             st.dataframe(processed_df)
-
