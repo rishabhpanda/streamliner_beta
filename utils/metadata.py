@@ -1,8 +1,5 @@
 import pandas as pd
 import streamlit as st
-import os
-from datetime import datetime
-import io
 
 def generate_metadata(uploaded_file):
     # Read the CSV file from the UploadedFile object
