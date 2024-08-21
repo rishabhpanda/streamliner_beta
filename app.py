@@ -11,18 +11,20 @@ BACKGROUND_CSS_FILE_PATH = os.path.join("styles", "background.css")
 BACKGROUND_IMAGE_PATH = os.path.join("utils", "images", "background.jpg")
 OPENAI_LOGO_PATH = os.path.join("utils", "images", "openai-lockup.png")
 SQL_SERVER_LOGO_PATH = os.path.join("utils", "images", "sql_server_logo.png")
+APACHE_SPARK_LOGO_PATH = os.path.join("utils", "images", "apache_spark_logo.png")
 
 # Convert images to base64 format
 base64_image_background = get_base64_image(BACKGROUND_IMAGE_PATH)
 base64_image_openai = get_base64_image(OPENAI_LOGO_PATH)
 base64_image_sql_server = get_base64_image(SQL_SERVER_LOGO_PATH)
+base64_image_apache_spark = get_base64_image(APACHE_SPARK_LOGO_PATH)
 
 # Initialize session state for authentication
 st.session_state.setdefault('authentication_status', None)
 st.session_state.setdefault('authenticated', False)
 
 # Load CSS files
-css_files = ["styles/header_texts.css", "styles/buttons.css", "styles/openai_logo.css", "styles/sidebar_sections.css"]
+css_files = ["styles/header_texts.css", "styles/buttons.css", "styles/logo.css", "styles/sidebar_sections.css"]
 for css_file in css_files:
     with open(css_file) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -50,25 +52,13 @@ st.sidebar.image("utils/images/bain_logo.png", width=340)
 # Navigation menu
 menu = st.sidebar.selectbox("**Login or Sign Up**", ["Login", "Register"])
 
-st.sidebar.markdown("<br><br><br><br>", unsafe_allow_html=True)
-
-# Documentation and user guide button
-st.sidebar.markdown(
-    """
-    <div class="sidebar-section-container">
-        <h3>Product Documentation</h3>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-st.sidebar.markdown("<br>", unsafe_allow_html=True)
+st.sidebar.markdown("<br><br><br>", unsafe_allow_html=True)
 
 # Sidebar content
 st.sidebar.markdown(
     f"""
     <a href="https://platform.openai.com/api-keys" target="_blank" style="text-decoration: none;">
-        <div class="logo-container">
+        <div class="logo-container-openai">
             <img src="data:image/png;base64,{base64_image_openai}">
         </div>
     </a>
@@ -78,10 +68,11 @@ st.sidebar.markdown(
 
 st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
+# Documentation and user guide button
 st.sidebar.markdown(
-    f"""
-    <div class="logo-container">
-        <img src="data:image/png;base64,{base64_image_sql_server}">
+    """
+    <div class="sidebar-section-container">
+        <h3>Product Documentation</h3>
     </div>
     """,
     unsafe_allow_html=True
