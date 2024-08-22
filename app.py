@@ -110,7 +110,7 @@ elif menu == "Register":
         else:
             st.error("Username already exists. Please choose a different username")
 
-# Main application logic
+# Main application
 if st.session_state.authenticated:
     openai.api_key = st.session_state.openai_api_key
 
