@@ -192,7 +192,7 @@ if st.session_state.authenticated:
 
         table_name = st.text_input("Enter the table name to push the data")
 
-        if st.button("Push Data to SQL"):
+        if st.button("Writeback to SQL Server"):
             success = push_data_to_sql(st.session_state.processed_df, table_name)
             if success:
                 st.success(f"Data successfully pushed to table `{table_name}`.")
