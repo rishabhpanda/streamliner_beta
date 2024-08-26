@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from tabulate import tabulate
 import openai
 import os
 import io
@@ -172,8 +173,8 @@ if st.session_state.authenticated:
             response = client.chat.completions.create(
                 model="gpt-4",
                 messages=[
-                    {"role": "system", "content": "You are an expert data analyst specialized in cleaning, transforming, and preparing datasets for analysis. Your task is to understand user prompts and directly apply the necessary operations to clean and format datasets, ensuring data quality, consistency, and readiness for further analysis. You should return the cleaned or processed data as the final output, not the steps or code to achieve it."},
-                    {"role": "user", "content": f"Here is the dataset:\n{csv_string}\n\n{prompt}"}
+                    {"role": "system", "content": "You are an expert data analyst specialized in cleaning, transforming, and preparing datasets for analysis. Your task is to understand user prompts and directly apply the necessary operations to clean and format datasets, ensuring data quality, consistency, and readiness for further analysis. You should return the cleaned or processed data strictly in CSV format, without any additional text, descriptions, or formatting."},
+                    {"role": "user", "content": f"Here is the dataset in CSV format:\n{csv_string}\n\n{prompt}\n\nPlease return the cleaned dataset in CSV format only, without any text or explanations."}
                 ]
             )
 
@@ -182,6 +183,8 @@ if st.session_state.authenticated:
 
             # Convert the processed CSV string back to a DataFrame using io.StringIO
             processed_df = pd.read_csv(io.StringIO(processed_csv_string))
+
+            print(tabulate(processed_df.head(), headers='keys', tablefmt='psql'))
 
             st.session_state['processed_df'] = processed_df  # Store the processed DataFrame in session state
 
