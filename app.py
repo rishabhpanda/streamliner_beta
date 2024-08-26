@@ -19,9 +19,12 @@ base64_image_openai = get_base64_image(OPENAI_LOGO_PATH)
 base64_image_sql_server = get_base64_image(SQL_SERVER_LOGO_PATH)
 base64_image_apache_spark = get_base64_image(APACHE_SPARK_LOGO_PATH)
 
-# Initialize session state for authentication
+# Initialize session state for authentication and data
 st.session_state.setdefault('authentication_status', None)
 st.session_state.setdefault('authenticated', False)
+st.session_state.setdefault('metadata', None)
+st.session_state.setdefault('df', None)
+st.session_state.setdefault('processed_df', None)
 
 # Load CSS files
 css_files = ["styles/header_texts.css", "styles/buttons.css", "styles/logo.css", "styles/sidebar_sections.css"]
@@ -116,16 +119,13 @@ if st.session_state.authenticated:
 
     data_source = st.radio("Select data source", ["Upload CSV", "Fetch from SQL Server"])
 
-    if 'df' not in st.session_state:
-        st.session_state.df = None  # Initialize df in session state if it doesn't exist
-
     if data_source == "Upload CSV":
         uploaded_file = st.file_uploader("Upload your dataset (CSV file)", type=["csv"])
 
         if uploaded_file:
             # Generate and display metadata for the uploaded file
             metadata = generate_metadata(uploaded_file)
-            display_metadata(metadata)
+            st.session_state['metadata'] = metadata  # Store metadata in session state
             uploaded_file.seek(0)  # Rewind the file pointer to the beginning
             st.session_state.df = pd.read_csv(uploaded_file)  # Store the DataFrame in session state
 
@@ -146,12 +146,15 @@ if st.session_state.authenticated:
 
                 # Generate and display metadata for the fetched data
                 metadata = generate_metadata(csv_buffer)
-                display_metadata(metadata)
-
+                st.session_state['metadata'] = metadata  # Store metadata in session state
                 st.session_state.df = df  # Store the DataFrame in session state
 
             except Exception as e:
                 st.error(f"Error fetching data: {e}")
+
+    # Retrieve and display metadata if it exists in session state
+    if st.session_state.metadata:
+        display_metadata(st.session_state['metadata'])  # Display metadata
 
     # If df is not None (i.e., data has been loaded either via upload or SQL fetch)
     if st.session_state.df is not None:
@@ -180,5 +183,9 @@ if st.session_state.authenticated:
             # Convert the processed CSV string back to a DataFrame using io.StringIO
             processed_df = pd.read_csv(io.StringIO(processed_csv_string))
 
-            st.write("Processed Dataset:")
-            st.dataframe(processed_df)
+            st.session_state['processed_df'] = processed_df  # Store the processed DataFrame in session state
+
+    # Display the processed DataFrame if it exists in session state
+    if st.session_state.processed_df is not None:
+        st.write("Processed Dataset:")
+        st.dataframe(st.session_state['processed_df'])
