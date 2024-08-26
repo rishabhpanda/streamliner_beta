@@ -65,3 +65,46 @@ def fetch_data_from_sql(query):
         df = pd.read_sql(query, conn)
     
     return df
+
+def push_data_to_sql(df, full_table_name):
+    conn_str = (
+        "DRIVER={ODBC Driver 17 for SQL Server};"
+        "SERVER=aag-a7rw-sql-server.database.windows.net;"
+        "DATABASE=product_testing;"
+        "Authentication=ActiveDirectoryPassword;"
+        "UID=rishabh.panda@bain.com;"
+        "PWD=Welcome2bain@123;"
+    )
+    
+    # Split full_table_name into schema_name and table_name
+    schema_name, table_name = full_table_name.split('.')
+    
+    with pyodbc.connect(conn_str) as conn:
+        cursor = conn.cursor()
+
+        # Check if the table exists
+        cursor.execute(f"""
+            IF OBJECT_ID('{schema_name}.{table_name}', 'U') IS NULL
+            BEGIN
+                CREATE TABLE [{schema_name}].[{table_name}] (
+                    {', '.join([f'[{col}] NVARCHAR(MAX)' for col in df.columns])}
+                )
+            END
+        """)
+        
+        # Create an insert statement with proper quoting
+        columns = ', '.join([f"[{col}]" for col in df.columns])
+        placeholders = ', '.join(['?'] * len(df.columns))
+        sql = f"INSERT INTO [{schema_name}].[{table_name}] ({columns}) VALUES ({placeholders})"
+        
+        # Print the SQL statement for debugging purposes
+        print(sql)  # You can comment this out or remove it after debugging
+
+        # Convert DataFrame rows to tuples
+        data = [tuple(row) for row in df.to_numpy()]
+        
+        # Execute the insert statement for each row
+        cursor.executemany(sql, data)
+        conn.commit()
+
+    return True

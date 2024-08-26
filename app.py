@@ -189,3 +189,12 @@ if st.session_state.authenticated:
     if st.session_state.processed_df is not None:
         st.write("Processed Dataset:")
         st.dataframe(st.session_state['processed_df'])
+
+        table_name = st.text_input("Enter the table name to push the data")
+
+        if st.button("Push Data to SQL"):
+            success = push_data_to_sql(st.session_state.processed_df, table_name)
+            if success:
+                st.success(f"Data successfully pushed to table `{table_name}`.")
+            else:
+                st.error(f"Failed to push data to table `{table_name}`.")
