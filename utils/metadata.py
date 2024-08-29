@@ -70,11 +70,11 @@ def display_metadata(metadata):
 
     # Combine the extended pieces of metadata into a single DataFrame
     data_types_df = pd.DataFrame(list(metadata['Operational Metadata']['Column Data Types'].items()), columns=["Column Name", "Data Type"])
-    null_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Null Count'].items()), columns=["Column Name", "Null Count"])
+    null_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Null Count'].items()), columns=["Column Name", "Nulls"])
     percentage_null_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage Null Values'].items()), columns=["Column Name", "% Nulls"])
-    unique_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Unique Values Count'].items()), columns=["Column Name", "Unique Count"])
+    unique_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Unique Values Count'].items()), columns=["Column Name", "Uniques"])
     percentage_unique_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage Unique Values'].items()), columns=["Column Name", "% Uniques"])
-    empty_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Empty Cells Count'].items()), columns=["Column Name", "Empty Count"])
+    empty_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Empty Cells Count'].items()), columns=["Column Name", "Empties"])
     percentage_empty_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage Empty Cells'].items()), columns=["Column Name", "% Empties"])
     mean_df = pd.DataFrame(list(metadata['Operational Metadata']['Mean'].items()), columns=["Column Name", "Mean"])
     median_df = pd.DataFrame(list(metadata['Operational Metadata']['Median'].items()), columns=["Column Name", "Median"])
