@@ -71,18 +71,18 @@ def display_metadata(metadata):
     # Combine the extended pieces of metadata into a single DataFrame
     data_types_df = pd.DataFrame(list(metadata['Operational Metadata']['Column Data Types'].items()), columns=["Column Name", "Data Type"])
     null_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Null Count'].items()), columns=["Column Name", "Null Count"])
-    percentage_null_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage Null Values'].items()), columns=["Column Name", "Percentage Null Values"])
+    percentage_null_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage Null Values'].items()), columns=["Column Name", "% Null Values"])
     unique_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Unique Values Count'].items()), columns=["Column Name", "Unique Count"])
-    percentage_unique_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage Unique Values'].items()), columns=["Column Name", "Percentage Unique Values"])
+    percentage_unique_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage Unique Values'].items()), columns=["Column Name", "% Unique Values"])
     empty_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Empty Cells Count'].items()), columns=["Column Name", "Empty Count"])
-    percentage_empty_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage Empty Cells'].items()), columns=["Column Name", "Percentage Empty Values"])
+    percentage_empty_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage Empty Cells'].items()), columns=["Column Name", "% Empty Values"])
     mean_df = pd.DataFrame(list(metadata['Operational Metadata']['Mean'].items()), columns=["Column Name", "Mean"])
     median_df = pd.DataFrame(list(metadata['Operational Metadata']['Median'].items()), columns=["Column Name", "Median"])
     std_dev_df = pd.DataFrame(list(metadata['Operational Metadata']['Standard Deviation'].items()), columns=["Column Name", "Standard Deviation"])
     min_value_df = pd.DataFrame(list(metadata['Operational Metadata']['Minimum Value'].items()), columns=["Column Name", "Minimum Value"])
     max_value_df = pd.DataFrame(list(metadata['Operational Metadata']['Maximum Value'].items()), columns=["Column Name", "Maximum Value"])
     number_of_zeros_df = pd.DataFrame(list(metadata['Operational Metadata']['Number of Zeros'].items()), columns=["Column Name", "Number of Zeros"])
-    percentage_of_zeros_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage of Zeros'].items()), columns=["Column Name", "Percentage of Zeros"])
+    percentage_of_zeros_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage of Zeros'].items()), columns=["Column Name", "% of Zeros"])
 
     # Merge the DataFrames on the "Column Name"
     combined_df = pd.merge(data_types_df, null_values_df, on="Column Name")
