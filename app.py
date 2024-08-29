@@ -118,10 +118,10 @@ elif menu == "Register":
 if st.session_state.authenticated:
     openai.api_key = st.session_state.openai_api_key
 
-    data_source = st.radio("Select data source", ["Upload CSV", "Fetch from SQL Server"])
+    data_source = st.radio("**Select data source**", ["Upload CSV", "Fetch from SQL Server"])
 
     if data_source == "Upload CSV":
-        uploaded_file = st.file_uploader("Upload your dataset (CSV file)", type=["csv"])
+        uploaded_file = st.file_uploader("**Upload your dataset (CSV file)**", type=["csv"])
 
         if uploaded_file:
             # Generate and display metadata for the uploaded file
@@ -131,7 +131,7 @@ if st.session_state.authenticated:
             st.session_state.df = pd.read_csv(uploaded_file)  # Store the DataFrame in session state
 
     elif data_source == "Fetch from SQL Server":
-        query = st.text_area("Enter SQL query to fetch data")
+        query = st.text_area("**Enter SQL query to fetch data**")
 
         if st.button("Fetch Data"):
             try:
@@ -159,14 +159,14 @@ if st.session_state.authenticated:
 
     # If df is not None (i.e., data has been loaded either via upload or SQL fetch)
     if st.session_state.df is not None:
-        st.write("Dataset preview:")
+        st.markdown("#### Dataset preview:")
         styled_df = st.session_state.df.style.apply(
             lambda x: ['background-color: #efefef' if i % 2 == 0 else 'background-color: #ffffff' for i in range(len(x))], axis=0
         )
         st.dataframe(styled_df)
 
         csv_string = st.session_state.df.to_csv(index=False)
-        prompt = st.text_area("Enter your data cleaning prompt")
+        prompt = st.text_area("**Enter your data cleaning prompt**")
 
         if st.button("Submit Prompt"):
             client = openai.OpenAI(api_key=openai.api_key)
@@ -190,10 +190,12 @@ if st.session_state.authenticated:
 
     # Display the processed DataFrame if it exists in session state
     if st.session_state.processed_df is not None:
-        st.write("Processed Dataset:")
+        st.markdown("#### Processed Dataset:")
         st.dataframe(st.session_state['processed_df'])
 
-        table_name = st.text_input("Enter the table name to push the data")
+        table_name = st.text_input(
+            "**Enter the table name to push the data**\n\n*The table name is expected to be in the following format, schema_name.table_name.*"
+        )
 
         if st.button("Writeback to SQL Server"):
             success = push_data_to_sql(st.session_state.processed_df, table_name)
