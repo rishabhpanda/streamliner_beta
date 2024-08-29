@@ -28,9 +28,20 @@ def generate_metadata(file_like):
     operational_metadata = {
         "Column Data Types": df.dtypes.to_dict(),
         "Null Count": df.isnull().sum().to_dict(),
+        "Percentage Null Values": (df.isnull().sum() / len(df) * 100).to_dict(),
         "Unique Values Count": df.nunique().to_dict(),
-        "Empty Cells Count": df.apply(lambda x: np.sum(x.astype(str).str.strip() == '') if x.dtype == "object" else 0).to_dict()
+        "Percentage Unique Values": (df.nunique() / len(df) * 100).to_dict(),
+        "Empty Cells Count": df.apply(lambda x: np.sum(x.astype(str).str.strip() == '') if x.dtype == "object" else 0).to_dict(),
+        "Percentage Empty Cells": df.apply(lambda x: np.sum(x.astype(str).str.strip() == '') / len(x) * 100 if x.dtype == "object" else 0).to_dict(),
+        "Mean": {col: df[col].mean() if pd.api.types.is_numeric_dtype(df[col]) else "NA" for col in df.columns},
+        "Median": {col: df[col].median() if pd.api.types.is_numeric_dtype(df[col]) else "NA" for col in df.columns},
+        "Standard Deviation": {col: df[col].std() if pd.api.types.is_numeric_dtype(df[col]) else "NA" for col in df.columns},
+        "Minimum Value": {col: df[col].min() if pd.api.types.is_numeric_dtype(df[col]) else "NA" for col in df.columns},
+        "Maximum Value": {col: df[col].max() if pd.api.types.is_numeric_dtype(df[col]) else "NA" for col in df.columns},
+        "Number of Zeros": {col: (df[col] == 0).sum() if pd.api.types.is_numeric_dtype(df[col]) else "NA" for col in df.columns},
+        "Percentage of Zeros": {col: ((df[col] == 0).sum() / len(df) * 100) if pd.api.types.is_numeric_dtype(df[col]) else "NA" for col in df.columns}
     }
+
     
     # Combine the metadata
     metadata = {
@@ -57,16 +68,37 @@ def display_metadata(metadata):
     # Operational Metadata
     st.markdown("#### Operational Metadata")
 
-    # Combine the three pieces of metadata into a single DataFrame
+    # Combine the extended pieces of metadata into a single DataFrame
     data_types_df = pd.DataFrame(list(metadata['Operational Metadata']['Column Data Types'].items()), columns=["Column Name", "Data Type"])
     null_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Null Count'].items()), columns=["Column Name", "Null Count"])
-    empty_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Empty Cells Count'].items()), columns=["Column Name", "Empty Count"])
+    percentage_null_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage Null Values'].items()), columns=["Column Name", "Percentage Null Values"])
     unique_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Unique Values Count'].items()), columns=["Column Name", "Unique Count"])
+    percentage_unique_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage Unique Values'].items()), columns=["Column Name", "Percentage Unique Values"])
+    empty_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Empty Cells Count'].items()), columns=["Column Name", "Empty Count"])
+    percentage_empty_values_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage Empty Cells'].items()), columns=["Column Name", "Percentage Empty Values"])
+    mean_df = pd.DataFrame(list(metadata['Operational Metadata']['Mean'].items()), columns=["Column Name", "Mean"])
+    median_df = pd.DataFrame(list(metadata['Operational Metadata']['Median'].items()), columns=["Column Name", "Median"])
+    std_dev_df = pd.DataFrame(list(metadata['Operational Metadata']['Standard Deviation'].items()), columns=["Column Name", "Standard Deviation"])
+    min_value_df = pd.DataFrame(list(metadata['Operational Metadata']['Minimum Value'].items()), columns=["Column Name", "Minimum Value"])
+    max_value_df = pd.DataFrame(list(metadata['Operational Metadata']['Maximum Value'].items()), columns=["Column Name", "Maximum Value"])
+    number_of_zeros_df = pd.DataFrame(list(metadata['Operational Metadata']['Number of Zeros'].items()), columns=["Column Name", "Number of Zeros"])
+    percentage_of_zeros_df = pd.DataFrame(list(metadata['Operational Metadata']['Percentage of Zeros'].items()), columns=["Column Name", "Percentage of Zeros"])
 
     # Merge the DataFrames on the "Column Name"
     combined_df = pd.merge(data_types_df, null_values_df, on="Column Name")
+    combined_df = pd.merge(combined_df, percentage_null_values_df, on="Column Name")
     combined_df = pd.merge(combined_df, unique_values_df, on="Column Name")
+    combined_df = pd.merge(combined_df, percentage_unique_values_df, on="Column Name")
     combined_df = pd.merge(combined_df, empty_values_df, on="Column Name")
+    combined_df = pd.merge(combined_df, percentage_empty_values_df, on="Column Name")
+    combined_df = pd.merge(combined_df, mean_df, on="Column Name")
+    combined_df = pd.merge(combined_df, median_df, on="Column Name")
+    combined_df = pd.merge(combined_df, std_dev_df, on="Column Name")
+    combined_df = pd.merge(combined_df, min_value_df, on="Column Name")
+    combined_df = pd.merge(combined_df, max_value_df, on="Column Name")
+    combined_df = pd.merge(combined_df, number_of_zeros_df, on="Column Name")
+    combined_df = pd.merge(combined_df, percentage_of_zeros_df, on="Column Name")
+
 
     def highlight_rows(row):
         return ['background-color: #efefef' if i % 2 == 0 else 'background-color: #ffffff' for i in range(len(row))]
