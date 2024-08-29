@@ -36,7 +36,7 @@ for css_file in css_files:
 # Header and subtitle
 st.markdown(
     """
-    <h1 class="gradient-text">Zephyrus AI (beta)</h1>
+    <h1 class="gradient-text">Zepphyrus AI (beta)</h1>
     <h3 class="custom-subtitle">How can I assist you with your data challenges?</h3>
     <hr class="custom-hr">
     """,
