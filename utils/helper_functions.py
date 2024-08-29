@@ -51,14 +51,14 @@ def get_base64_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode()
 
-def fetch_data_from_sql(query):
+def fetch_data_from_sql(query, server, database, user_id, password):
     conn_str = (
-        "DRIVER={ODBC Driver 17 for SQL Server};"
-        "SERVER=aag-a7rw-sql-server.database.windows.net;"
-        "DATABASE=product_testing;"
+        f"DRIVER={{ODBC Driver 17 for SQL Server}};"
+        f"SERVER={server};"
+        f"DATABASE={database};"
         "Authentication=ActiveDirectoryPassword;"
-        "UID=rishabh.panda@bain.com;"
-        "PWD=Welcome2bain@123;"
+        f"UID={user_id};"
+        f"PWD={password};"
     )
     
     with pyodbc.connect(conn_str) as conn:
@@ -66,14 +66,14 @@ def fetch_data_from_sql(query):
     
     return df
 
-def push_data_to_sql(df, full_table_name):
+def push_data_to_sql(df, full_table_name, server, database, user_id, password):
     conn_str = (
-        "DRIVER={ODBC Driver 17 for SQL Server};"
-        "SERVER=aag-a7rw-sql-server.database.windows.net;"
-        "DATABASE=product_testing;"
+        f"DRIVER={{ODBC Driver 17 for SQL Server}};"
+        f"SERVER={server};"
+        f"DATABASE={database};"
         "Authentication=ActiveDirectoryPassword;"
-        "UID=rishabh.panda@bain.com;"
-        "PWD=Welcome2bain@123;"
+        f"UID={user_id};"
+        f"PWD={password};"
     )
     
     # Split full_table_name into schema_name and table_name

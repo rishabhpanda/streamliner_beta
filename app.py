@@ -131,11 +131,18 @@ if st.session_state.authenticated:
             st.session_state.df = pd.read_csv(uploaded_file)  # Store the DataFrame in session state
 
     elif data_source == "Fetch from SQL Server":
-        query = st.text_area("**Enter SQL query to fetch data**")
+        # Input fields for SQL Server credentials
+        server = st.text_input("**Server**", key="sql_server")
+        database = st.text_input("**Database**", key="database")
+        user_id = st.text_input("**User ID** (Please enter your work email)", key="user_id")
+        password = st.text_input("**Password** (Please enter your system password)", type="password", key="password")
+
+        query = st.text_area("**Enter SQL query to retrieve data**")
 
         if st.button("Fetch Data"):
             try:
-                df = fetch_data_from_sql(query)  # Fetch data from SQL Server
+                # Pass the credentials and query to the fetch function
+                df = fetch_data_from_sql(query, server, database, user_id, password)
                 st.success("Data fetched successfully.")
 
                 # Convert the DataFrame to a CSV string for further processing
@@ -198,7 +205,7 @@ if st.session_state.authenticated:
         )
 
         if st.button("Writeback to SQL Server"):
-            success = push_data_to_sql(st.session_state.processed_df, table_name)
+            success = push_data_to_sql(st.session_state.processed_df, table_name, server, database, user_id, password)
             if success:
                 st.success(f"Data successfully pushed to table `{table_name}`.")
             else:
