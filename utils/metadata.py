@@ -7,7 +7,7 @@ def generate_metadata(file_like):
     # Check if the input is a StringIO object (from SQL query) or an UploadedFile
     if isinstance(file_like, io.StringIO):
         df = pd.read_csv(file_like)
-        file_name = "Fetched Data from SQL"
+        file_name = "<Sourced from SQL Server>"
         file_size = len(file_like.getvalue()) / 1024  # Estimate size in KB
     else:
         df = pd.read_csv(file_like)
@@ -20,8 +20,7 @@ def generate_metadata(file_like):
         "File Size": f"{file_size:.2f} KB",
         "Number of Rows": df.shape[0],
         "Number of Columns": df.shape[1],
-        "Column Names": list(df.columns),
-        "Description": f"The dataset contains {df.shape[0]} rows and {df.shape[1]} columns."
+        "Column Names": list(df.columns)
     }
     
     # Operational Metadata
@@ -63,7 +62,6 @@ def display_metadata(metadata):
     for column_name in metadata['Descriptive Metadata']['Column Names']:
         st.markdown(f"<p style='margin-left: 20px;'>╰┈➤ {column_name}</p>", unsafe_allow_html=True)
     st.markdown("</ul>", unsafe_allow_html=True)
-    st.markdown(f"**Description:** {metadata['Descriptive Metadata']['Description']}")
 
     # Operational Metadata
     st.markdown("#### Operational Metadata")
