@@ -208,7 +208,7 @@ if st.session_state.authenticated:
         hyper_file_path = os.path.join("hyper_exports", hyper_file_name)
 
         # Button to export data as .hyper file
-        if st.button("Export as .hyper file"):
+        if st.button("Export as hyper file"):
             try:
                 write_hyper_file(st.session_state.processed_df, hyper_file_path, table_name)
                 st.success(f"Data has been successfully written to {hyper_file_path}")
@@ -219,7 +219,7 @@ if st.session_state.authenticated:
             "**Enter the table name to push the data**\n\n*The table name is expected to be in the following format, schema_name.table_name.*"
         )
 
-        if st.button("Writeback to SQL Server"):
+        if st.button("Push to SQL Server"):
             success = push_data_to_sql(st.session_state.processed_df, table_name, server, database, user_id, password)
             if success:
                 st.success(f"Data successfully pushed to table `{table_name}`.")
