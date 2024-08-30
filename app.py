@@ -166,7 +166,7 @@ if st.session_state.authenticated:
 
     # If df is not None (i.e., data has been loaded either via upload or SQL fetch)
     if st.session_state.df is not None:
-        st.markdown("#### Dataset preview:")
+        st.markdown("#### Dataset Preview:")
         styled_df = st.session_state.df.style.apply(
             lambda x: ['background-color: #efefef' if i % 2 == 0 else 'background-color: #ffffff' for i in range(len(x))], axis=0
         )
@@ -199,6 +199,21 @@ if st.session_state.authenticated:
     if st.session_state.processed_df is not None:
         st.markdown("#### Processed Dataset:")
         st.dataframe(st.session_state['processed_df'])
+
+        # Prompt user to specify the hyper file name
+        hyper_file_name = st.text_input("**Enter the .hyper file name** (default set as 'output_file.hyper')", value="output_file.hyper")
+        table_name = st.text_input("**Enter the table name for the .hyper file** (default set as 'Extract')", value="Extract")
+
+        # Construct the full file path within the 'hyper_exports' directory
+        hyper_file_path = os.path.join("hyper_exports", hyper_file_name)
+
+        # Button to export data as .hyper file
+        if st.button("Export as .hyper file"):
+            try:
+                write_hyper_file(st.session_state.processed_df, hyper_file_path, table_name)
+                st.success(f"Data has been successfully written to {hyper_file_path}")
+            except Exception as e:
+                st.error(f"Failed to write data to .hyper file: {e}")
 
         table_name = st.text_input(
             "**Enter the table name to push the data**\n\n*The table name is expected to be in the following format, schema_name.table_name.*"

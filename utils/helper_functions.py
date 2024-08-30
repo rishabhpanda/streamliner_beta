@@ -1,3 +1,4 @@
+from tableauhyperapi import HyperProcess, Connection, TableDefinition, SqlType, Telemetry, Inserter, CreateMode, TableName
 import pandas as pd
 import hashlib
 import pyodbc
@@ -108,3 +109,41 @@ def push_data_to_sql(df, full_table_name, server, database, user_id, password):
         conn.commit()
 
     return True
+
+
+def write_hyper_file(df, hyper_file_path, table_name):
+    # Mapping pandas datatypes to Hyper SQL datatypes
+    type_mapping = {
+        "float64": SqlType.double(),
+        "int64": SqlType.int(),
+        "object": SqlType.varchar(255),
+        "datetime64[ns]": SqlType.timestamp(),
+        "bool": SqlType.bool()
+    }
+
+    # Replace NaN values with an empty string
+    df = df.fillna('')
+
+    # Get the column names and types
+    column_types = {col: type_mapping.get(str(dtype), SqlType.text()) for col, dtype in df.dtypes.items()}
+
+    # Create a HyperProcess instance
+    with HyperProcess(telemetry=Telemetry.SEND_USAGE_DATA_TO_TABLEAU) as hyper:
+
+        # Create or overwrite the Hyper file
+        with Connection(endpoint=hyper.endpoint, database=hyper_file_path, create_mode=CreateMode.CREATE_AND_REPLACE) as connection:
+
+            # Define the table
+            table_definition = TableDefinition(table_name=TableName(table_name))
+
+            # Add columns to the table definition
+            for column_name, column_type in column_types.items():
+                table_definition.add_column(column_name, column_type)
+
+            # Create the table in the Hyper file
+            connection.catalog.create_table(table_definition)
+
+            # Insert data into the table
+            with Inserter(connection, table_definition) as inserter:
+                inserter.add_rows(df.itertuples(index=False, name=None))
+                inserter.execute()
